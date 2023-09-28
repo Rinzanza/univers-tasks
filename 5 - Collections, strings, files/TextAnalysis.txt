@@ -1,1 +1,51 @@
 Практика «Парсер предложений»
+
+using System.Collections.Generic;// +
+using System.Text;
+
+public static class SentencesParserTask
+{
+    // Массив символов разделяющие предложения
+    private static readonly char[] sentenceSeparators = { '.', '!', '?', ';', ':', '(', ')' };
+    // Метод разбора предложений
+    public static List<List<string>> ParseSentences(string text)
+    {
+        var list = new List<List<string>>();
+        var sentencesList = text.ToLower().Split(sentenceSeparators);
+
+        foreach (var sentence in sentencesList)
+        {
+            var wordList = new List<string>();
+            var wordBuilder = new StringBuilder();
+			
+            // Разбираем предложение на слова
+            Build(sentence, wordBuilder, wordList);
+
+            // Добавляем последнее слово в список слов.
+            if (wordBuilder.Length > 0)
+            {
+                wordList.Add(wordBuilder.ToString());
+                wordBuilder.Clear();
+            }
+
+            // Добавляем список слов в список списка слов.
+            if (wordList.Count > 0) list.Add(wordList);
+        }
+        return list;
+    }
+
+    // Метод разбора слов
+    private static void Build(string sentence, StringBuilder builder, List<string> list)
+    {
+        foreach (var word in sentence)
+        {
+            if (char.IsLetter(word) || word == '\'')
+                builder.Append(word);
+            else if (builder.Length > 0)
+            {
+                list.Add(builder.ToString());
+                builder.Clear();
+            }
+        }
+    }
+}
